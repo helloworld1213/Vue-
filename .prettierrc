@@ -1,0 +1,7 @@
+{
+  //快捷键格式化文档: shift+alt+F
+  //取消分号
+  "semi": false,
+  //所有的引号都是单引号
+  "singleQuote": true
+}
