@@ -3,7 +3,7 @@
     <div class="login-box">
       <!-- 头像区域 -->
       <div class="login-avatar">
-        <img src="../../assets/images/logo.svg" alt="">
+        <img src="../assets/images/logo.svg" alt="">
       </div>
       <!-- 表单区域 -->
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px">
