@@ -43,7 +43,8 @@
               size="mini" @click="removeUSerById(scope.row.id)"></el-button>
             <!-- 分配角色 -->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" 
+                size="mini" @click="showUsersDialogVisible(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -58,59 +59,84 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-      <!-- 添加用户区域 -->
-      <el-dialog
-        title="添加用户"
-        :visible.sync="addDialogVisible"
-        width="50%"
-        @close="addDialogClosed">
-        <!-- 内容主体区域 -->
-        <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="addForm.username"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="addForm.password" type="password"></el-input>
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="addForm.email" type="email"></el-input>
-          </el-form-item>
-          <el-form-item label="手机" prop="mobile">
-            <el-input v-model="addForm.mobile" type="tel"></el-input>
-          </el-form-item>
-        </el-form>
-        <!-- 底部区域 -->
-        <span slot="footer" class="dialog-footer">
-          <!-- 添加的事件:点击取消或确定都会隐藏对话框 -->
-          <el-button @click="addDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addUser">确 定</el-button>
-        </span>
-      </el-dialog>
-      <!-- 修改用户区域 -->
-      <el-dialog
-        title="修改用户"
-        :visible.sync="editDialogVisible"
-        width="50%"
-        @close="editDialogClosed">
-        <!-- 内容主体区域 -->
-        <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
-          <el-form-item label="用户名">
-            <el-input v-model="editForm.username" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="editForm.email"></el-input>
-          </el-form-item>
-          <el-form-item label="手机" prop="mobile">
-            <el-input v-model="editForm.mobile"></el-input>
-          </el-form-item>
-        </el-form>
-        <!-- 底部按键区域 -->
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="editDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="editUser">确 定</el-button>
-        </span>
-      </el-dialog>
     </el-card>
+    <!-- 添加用户区域 -->
+    <el-dialog
+      title="添加用户"
+      :visible.sync="addDialogVisible"
+      width="50%"
+      @close="addDialogClosed">
+      <!-- 内容主体区域 -->
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email" type="email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="addForm.mobile" type="tel"></el-input>
+        </el-form-item>
+      </el-form>
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <!-- 添加的事件:点击取消或确定都会隐藏对话框 -->
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 修改用户区域 -->
+    <el-dialog
+      title="修改用户"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClosed">
+      <!-- 内容主体区域 -->
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
+        <el-form-item label="用户名">
+          <el-input v-model="editForm.username" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <!-- 底部按键区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editUser">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 分配角色对话框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="allotUsersDialogVisible"
+      width="50%"
+      @close="setRoleDialogClosed">
+      <div>
+        <p>当前的用户: {{userInfo.username}}</p>
+        <p>当前的角色: {{userInfo.role_name}}</p>
+        <p class="drop-down">分配新角色: 
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="allotUsersDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -165,6 +191,14 @@ export default {
       editForm: {
 
       },
+      //分配角色对话框的显示与隐藏
+      allotUsersDialogVisible: false,
+      //拿到的展示在弹窗上部的用户数据
+      userInfo: {},
+      //拿到的在弹窗底部展示的下拉菜单的数据
+      rolesList: [],
+      //已选中的角色的id值
+      selectedRoleId: '',
       //添加表单的验证规则对象
       addFormRules: {
         username: [
@@ -350,11 +384,49 @@ export default {
           this.getUsersList();
         }
       } 
+    },
+    async showUsersDialogVisible(userInfo) {
+      this.userInfo = userInfo;
+      // console.log(userInfo);
+      const {data: res} = await this.$http.get('roles');
+      if(res.meta.status !== 200) {
+        return this.$message.error("获取角色失败");
+      }else {
+        // console.log("获取角色成功");
+        // console.log(res.data);
+        this.rolesList = res.data;
+      }
+      this.allotUsersDialogVisible = true;
+    },
+    //点击确定按钮,分配角色
+    async saveRoleInfo() {
+      //先判断,看是否是发起新的角色请求
+      if(!this.selectedRoleId) {
+        return this.$message.error("请选择要分配的角色");
+      }else {
+        const {data: res} = await this.$http.put(`users/${this.userInfo.id}/role`, {
+          rid: this.selectedRoleId
+        })
+        if(res.meta.status !== 200) {
+          return this.$message.error("更新角色失败");
+        }else {
+          this.$message.success("更新角色成功");
+          this.getUsersList();
+          this.allotUsersDialogVisible = false;
+        }
+      }
+    },
+    //当选择更新完角色关闭弹窗之后,把选项恢复到初始时候
+    setRoleDialogClosed() {
+      this.selectedRoleId = '';
+      this.userInfo = {};
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+  .drop-down {
+    margin-top: 15px;
+  }
 </style>
