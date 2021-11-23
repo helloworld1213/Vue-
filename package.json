@@ -22,6 +22,7 @@
     "babel-plugin-component": "^1.1.1",
     "less": "^3.8.0",
     "less-loader": "^6.0.0",
+    "vue-table-with-tree-grid": "^0.2.4",
     "vue-template-compiler": "^2.6.11"
   }
 }

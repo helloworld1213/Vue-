@@ -27,7 +27,8 @@ import {
   Tag,
   Tree,
   Select,
-  Option
+  Option,
+  Cascader,
  } from 'elment-ui'
 
 Vue.use(Form)
@@ -56,6 +57,7 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Cascader)
 //message用法不同,要挂载到Vue上
 Vue.prototype.$message = Message;
 //MessageBox要挂载到Vue上
