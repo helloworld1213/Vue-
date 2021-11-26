@@ -20,3 +20,14 @@ html, body, #app {
 .el-pagination {
   margin-top: 15px;
 }
+/* Add.vue部分样式 */
+.el-steps {
+  margin: 15px 0;
+}
+.el-step__title {
+  font-size: 13px;
+}
+/* 富文本 */
+.ql-editor{
+  min-height: 300px;
+}

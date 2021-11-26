@@ -32,6 +32,10 @@ import {
   Alert,
   Tabs,
   TabPane,
+  Steps,
+  Checkbox,
+  CheckboxGroup,
+
  } from 'elment-ui'
 
 Vue.use(Form)
@@ -64,6 +68,9 @@ Vue.use(Cascader)
 Vue.use(Alert)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Steps)
+Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
 //message用法不同,要挂载到Vue上
 Vue.prototype.$message = Message;
 //MessageBox要挂载到Vue上
