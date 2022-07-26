@@ -1,0 +1,95 @@
+/* 给html,body设置高度 */
+html,body,#app {
+  height: 100%;
+  min-width: 1280px;
+}
+
+
+/* 取消默认样式 */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+/* 弹出消息框,页面会抖动一下,添加下面的样式,页面底部如果超出部分,
+    滚动条又会消失不见
+*/
+/* body {
+  padding-right: 0 !important;
+  overflow: hidden;
+} */
+/* 正确做法,给body只添加overflow: auto */
+body {
+  /* 这种写法部分页面消息弹窗还是会抖动 */
+  /* overflow: auto; */
+
+  /* 这种写法不抖动了,但是地址页面打开右侧会有两个滚动条 */
+  /* 只写这个属性，会出现两个滚动条 */
+  /* overflow-y: auto !important;  */
+  /* 只写这个属性，当你打开dialog时，由于padding-right=0；页面宽度会大17px；dialog会抖动 */
+  /* padding-right: 0 !important; */
+
+  /* 这种好像能解决所有的问题 */
+  /* 当overflow的值为overlay时，行为与auto相同，但滚动条绘制在内容之上而不是占用空间。 仅在基于WebKit（例如，Safari）和基于Blink的（例如，Chrome或Opera）浏览器中受支持。
+     注意：这是一个实验性质的属性值，不建议在生产环境使用 
+  */
+  overflow: overlay; 
+}
+
+
+/* 给面包屑导航添加下margin */
+.el-breadcrumb {
+  margin-bottom: 15px;
+}
+
+/* 给table添加上下margin */
+.el-table {
+  margin: 15px 0;
+  font-size: 12px!important;
+}
+
+/* 给table-特分类添加margin */
+.zk-table {
+  margin: 15px 0;
+}
+
+/* 给级联选择器添加样式 */
+/* 防止展开的盒子高度太高 */
+.el-cascader-panel {
+  height: 300px;
+}
+
+/* 解决圆圈文本的问题 */
+.el-cascader-panel .el-radio {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+ }
+ .el-cascader-node__label {
+  width: 157px;
+ }
+ .el-cascader-panel .el-radio__input {
+  visibility: hidden;
+ }
+ .el-cascader-panel .el-cascader-node__postfix {
+  top: 10px;
+ }
+
+ /* 给步骤条添加样式 */
+ .el-steps {
+  margin: 15px 0;
+}
+
+.el-step__title {
+  font-size: 12px !important;
+}
+
+/* 给富文本编辑器添加最小高度 */
+.ql-editor {
+  min-height: 300px;
+}
+
+

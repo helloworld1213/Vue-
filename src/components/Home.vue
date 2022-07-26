@@ -1,170 +1,183 @@
 <template>
-  <el-container class="home-container">
-    <!-- 头部区域 -->
-    <el-header>
-      <div>
-        <img src="../assets/images/huluwa.webp" alt="">
-        <span>电商后台管理系统</span>
-      </div>
-      <el-button type="info" @click="logout">退出</el-button>
-    </el-header>
-    <!-- 页面主体区域 -->
-  <el-container>
-    <!-- 侧边栏 -->
-    <el-aside :width="collpaseWidth">
-      <div class="toggle-button" @click="toggleCollapse" >|||</div>
-      <el-menu
-        background-color="#333744"
-        text-color="#fff"
-        active-text-color="#409EFF"
-        unique-opened
-        :collapse="isCollapse"
-        :collapse-transition="false"
-        router
-        :default-active="activePath">
-        <!-- 一级菜单 -->
-        <el-submenu :index="item.id + ''" 
-          v-for="item in menuList" 
-          :key="item.id">
-          <!-- 一级菜单的模板区域 -->
-          <template slot="title">
-            <!-- 图标 -->
-            <i :class="listObj[item.id]"></i>
-            <!-- 文本 -->
-            <span>{{item.authName}}</span>
-          </template>
-          <!-- 二级菜单 -->
-          <el-menu-item 
-            :index="'/' + subItem.path" 
-            v-for="subItem in item.children"
-            @click="saveNavState('/' + subItem.path)">
-            <!-- 图标 -->
-            <i class="el-icon-menu"></i>
-            <!-- 文本 -->
-            <span>{{subItem.authName}}</span>
-          </el-menu-item>
-        </el-submenu>
-      </el-menu>
-    </el-aside>
-    <!-- 右侧内容主体 -->
-    <el-main>
-      <router-view/>
-    </el-main>
-  </el-container>
-</el-container>
+  <div class='home-container'>
+    <!-- 整体布局 -->
+    <el-container>
+      <!-- 头部区域 -->
+      <el-header>
+        <div class="left-content">
+          <img src="../assets/images/calabashBrother.webp" alt="">
+          <span>后台管理系统</span>
+        </div>
+        <el-button type="info" @click="logOut">退出</el-button>
+      </el-header>
+      <el-container>
+        <!-- 侧边栏区域 -->
+        <el-aside :width="controlCollapse ? '60px': '200px'">
+          <!-- 顶部开关按钮 -->
+          <div class="controlBtn" @click="controlChange">
+            <i v-if="controlCollapse" class="el-icon-caret-right"></i>
+            <i v-else class="el-icon-caret-left"></i>
+          </div>
+          <!-- 侧边菜单栏 -->
+          <el-menu
+            :default-active="activePath"
+            background-color="#313743"
+            text-color="#fff"
+            active-text-color="#3582ff"
+            :collapse-transition="false"
+            unique-opened
+            router
+            :collapse="controlCollapse">
+            <el-submenu :index="item.id + ''" v-for="(item, i) in menuList" :key="item.id">
+              <template slot="title">
+                <i :class="iconsObj[item.id]"></i>
+                <span>{{item.authName}}</span>
+              </template>
+              <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" 
+                :key="subItem.id" @click="showActivePath('/' + subItem.path)">
+                <i class="el-icon-menu"></i>
+                <span slot="title">{{subItem.authName}}</span>
+              </el-menu-item>
+            </el-submenu>
+          </el-menu>
+        </el-aside>
+        <el-main>
+          <!-- 定义了路由之后还要在main里面使用 -->
+          <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
+import request from '../network/request'
 export default {
   name: 'Home',
-  data() {
+  data () {
     return {
+      //侧边栏数据
       menuList: [],
-      listObj: {
+      //icon全部防在这里,以便以后修改
+      iconsObj: {
         '125': 'iconfont icon-users',
         '103': 'iconfont icon-tijikongjian',
         '101': 'iconfont icon-shangpin',
         '102': 'iconfont icon-danju',
-        '145': 'iconfont icon-baobiao',
+        '145': 'iconfont icon-baobiao'
       },
-      isCollapse: false,
-      activePath: '',
-    }
-  },
-  computed: {
-    collpaseWidth() {
-      return this.isCollapse ? '64px' : '200px';
-    }
-  },
-  methods: {
-    // 退出登录
-    logout() {
-      // 清空token
-      window.sessionStorage.clear();
-      // 路径跳转到登录页
-      this.$router.push("/login");
-    },
-    //获取所有的菜单
-    async getMenuList() {
-      //promise对象
-      // console.log(this.$http.get('menus'));
-      //添加await就是一个具体的promise对象
-      // console.log(await this.$http.get('menus'));
-      //通过解构赋值把拿到的数据赋值给res
-      const {data: res} = await this.$http.get('menus');
-      // console.log(res);
-      //把拿到的对象挂载到data里面的menuList里面
-      //先判断数据是否成功拿到
-      if(res.meta.status !== 200) {
-        return this.$message.error(res.meta.msg);
-      }else {
-        this.menuList = res.data;
-      }
-    },
-    //点击折叠
-    toggleCollapse() {
-      this.isCollapse = !this.isCollapse;
-    },
-     //保存链接的激活状态
-    saveNavState(activePath) {
-      window.sessionStorage.setItem('activePath', activePath);
-      //重新赋值
-      this.activePath = activePath;
-    },
+      //控制开关的打开和闭合
+      controlCollapse: false,
+    };
   },
   created() {
-    //一进入就拿到左侧菜单栏列表数据
     this.getMenuList();
-
-    this.activePath = window.sessionStorage.getItem('activePath');
+    //当实例重新创建时,再把保存的活跃路径发送给当前路径
+    //注意: 保存的路径必须是'/xxx',而不是'xxx',所以一直不起作用,上面index是
+    //什么形式,就完整的保存下来就行
+    this.activePath = window.sessionStorage.getItem('activePath')
+  },
+  methods: {
+    //点击退出按钮退出登录
+    logOut() {
+      //点击退出后的操作
+      //1.清空token
+      window.sessionStorage.clear();
+      //2.强制跳转到login页面
+      this.$router.push('/login');
+    },
+    //获取用户数据列表数据
+    async getMenuList() {
+      const {data: res} = await request({
+        url: 'menus',
+      })
+      // console.log(res);
+      if(res.meta.status !== 200) {
+        return this.$message.error('获取用户数据列表失败!')
+      }
+      console.log('获取用户数据列表成功!');
+      this.menuList = res.data;
+    },
+    //控制开关的打开和闭合
+    controlChange() {
+      this.controlCollapse = !this.controlCollapse;
+    },
+    //保存动态路径
+    showActivePath(activePath) {
+      // console.log(activePath);
+      //把动态路径保存到sessionStorage中
+      window.sessionStorage.setItem('activePath', activePath)
+    }
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style  lang='less' scoped>
+  .home-container {
+    height: 100%;
+  }
   .el-header {
-    background-color: #373d41;
+    width: 100%;
+    height: 60px;
+    background-color: rgb(53, 60, 63);
+    //样式这里后面的分号一定不能丢掉,就这样的一个问题搞了我一天
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #eaedf1;
-    
-    div {
+
+    .left-content {
       display: flex;
       align-items: center;
+      //这里不应该给left-content设置固定宽度,然后让img百分百,这样
+      //span就没有位置了
       img {
-        width: 30px;
-        height: 30px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
       }
       span {
+        color: #fff;
         margin-left: 15px;
       }
     }
   }
-  .el-aside {
-    background-color: #333744;
-    .el-menu {
-      border-right: 0;
-    }
-    .toggle-button {
-      font-size: 12px;
-      background-color: #4A5064;
-      line-height: 24px;
-      text-align: center;
-      color: #fff;
-      letter-spacing: 0.2em;
-      cursor: pointer;
 
+  //这里不能设置el-container为100%, 因为el-container里面还包含
+  //着一个el-container
+  // .is-container {
+  //   height: 100%;
+  // }
+  //所以,只给第一个el-container添加高度
+  .is-vertical {
+    height: 100%;
+  }
+
+  .el-aside {
+    background-color: rgb(49, 55, 67);
+
+    .iconfont {
+      margin-right: 10px;
+    }
+
+    .el-menu {
+      border: none;
+    }
+
+    //按钮
+    .controlBtn {
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      line-height: 25px;
+      background-color: #4a5064;
+      letter-spacing: .2em;
+
+      i {
+        font-size: 25px;
+      }
     }
   }
   .el-main {
-    background-color: #eaedf1;
-  }
-  .home-container {
-    height: 100%;
-  }
-  .iconfont {
-    margin-right: 10px;
+    background-color: #fff;
   }
 </style>

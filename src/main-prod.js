@@ -6,8 +6,8 @@ import store from './store'
 import './assets/css/style.css'
 //导入iconfonts
 import './assets/fonts/iconfont.css'
-//导入elementUI
-import '../src/plugins/element'
+//导入elementUI(修改: 注释掉,让后通过staticfile在index引入)
+// import './plugins/element'
 //导入网络请求函数
 // import './network/request'
 //导入树形组件
@@ -18,10 +18,10 @@ Vue.component('table-tree', tableTree)
 //导入富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'
 
-// require styles(把富文本编辑器样式放到index.html中,这里就不用了)
-// import 'quill/dist/quill.core.css'
-// import 'quill/dist/quill.snow.css'
-// import 'quill/dist/quill.bubble.css'
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 Vue.use(VueQuillEditor, /* { default global options } */)
 

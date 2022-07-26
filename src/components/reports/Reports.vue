@@ -1,27 +1,29 @@
 <template>
-  <div>
-    <!-- !-- 面包屑导航 --> 
+  <div class=''>
+    <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>数据统计</el-breadcrumb-item>
       <el-breadcrumb-item>数据报表</el-breadcrumb-item>
-    </el-breadcrumb>
-    <!-- 卡片区域 -->
+    </el-breadcrumb> 
+    <!-- 卡片视图区域 --> 
     <el-card>
       <!-- 2.为 ECharts 准备一个定义了宽高的 DOM -->
-      <div id="main" style="width: 750px;height:400px;"></div>
+      <div id="main" style="width: 800px;height:500px;"></div>
     </el-card>
   </div>
 </template>
 
 <script>
-//1.导入echarts
-import * as echarts from 'echarts';
-import _ from 'lodash';
+// 1.导入echarts
+import * as echarts from 'echarts'
+import request from '../../network/request'
+import _ from 'lodash'
 export default {
   name: 'Reports',
-  data() {
+  data () {
     return {
+      //需要将这个options和请求到的数据合并,因为请求来的数据不完整
       options: {
         title: {
           text: '用户来源'
@@ -52,35 +54,25 @@ export default {
           }
         ]
       }
-    }
+    };
   },
-  created() {
-
-  },
-  //DOM在mounted才加载完毕,此时,页面上的元素,已经渲染完毕了
   async mounted() {
-     // 3.基于准备好的dom，初始化echarts实例
+    // 3.基于准备好的dom，初始化echarts实例
       var myChart = echarts.init(document.getElementById('main'));
 
-      //请求数据
-      const {data: res} = await this.$http.get('reports/type/1')
-      if(res.meta.status !== 200) {
-        return this.$message.error("请求报表数据失败");
-      }
-      //4.准备数据和配置项
-      // 指定图表的配置项和数据
+      // 4.指定图表的配置项和数据
+      //4.1请求数据
+      const {data: res} = await request({url: 'reports/type/1'})
+      console.log(res);
+      //4.2合并数据(将options里面的数据和请求到的数据合并,用到lodash的merge方法)
+      const result = _.merge(res.data, this.options)
 
-      //合并数据,得到我们想要的结果(用到lodash)
-      const result =  _.merge(res.data, this.options);
-
-      //5.展示数据
-      // 使用刚指定的配置项和数据显示图表。
-      // myChart.setOption(res.data);
+      // 5.使用刚指定的配置项和数据显示图表。
       myChart.setOption(result);
   }
 }
 </script>
 
-<style lang="less" scope>
-
+<style lang='less' scoped>
+  
 </style>
