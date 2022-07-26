@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/dist/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/dist/' : '/',
   chainWebpack: config => {
     // 生产模式
     config.when(process.env.NODE_ENV === 'production', config => {
