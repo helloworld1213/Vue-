@@ -1,5 +1,6 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/dist/' : '/',
+  indexPath: 'index.html',
   chainWebpack: config => {
     // 生产模式
     config.when(process.env.NODE_ENV === 'production', config => {
@@ -39,17 +40,22 @@ module.exports = {
 
 
 
-  // configureWebpack: {
-//   resolve: {
-//     //配置别名
-//     alias: {
-//       '@': 'src',
-//       'assets': '@/assets',
-//       'components': '@/components',
-//       'network': '@/network',
-//     }
-//   }
-// }
+//   // configureWebpack: {
+// //   resolve: {
+// //     //配置别名
+// //     alias: {
+// //       '@': 'src',
+// //       'assets': '@/assets',
+// //       'components': '@/components',
+// //       'network': '@/network',
+// //     }
+// //   }
+// // }
 }
+
+
+
+
+
 
 
