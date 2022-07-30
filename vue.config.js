@@ -1,6 +1,6 @@
 module.exports = {
   //部署应用包时的基本 URL
-  baseUrl: process.env.NODE_ENV === 'production' ? '/dist/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/VueProject/dist/' : '/',
   //当运行 vue-cli-service build 时生成的生产环境构建文件的目录。注意目标
   //目录的内容在构建之前会被清除 (构建时传入 --no-clean 可关闭该行为)
   outputDir: 'dist',
